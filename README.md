@@ -1,9 +1,15 @@
+<p align="center">
+  <a href="https://aiaugmentedscholar.co"><img src="assets/owl-logo.png" width="160" alt="The AI-Augmented Scholar owl"></a>
+</p>
+
 # teaching-video
 
 A free Claude Code plugin for educational videos with talking-head footage:
 one person on camera, explaining. You draft the lecture and film it. Claude
 does the editing work that used to take three or four times the length of
 the video.
+
+Made by The AI-Augmented Scholar: [aiaugmentedscholar.co](https://aiaugmentedscholar.co).
 
 ## What it does
 
