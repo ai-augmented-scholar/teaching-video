@@ -125,12 +125,42 @@ Plain sentences work too:
 - It does not run on Windows or on an Intel Mac.
 - It runs in Claude Code only, not in the other Claude apps.
 
-## License and credits
-
-MIT. See [LICENSE](LICENSE). The plugin passes on work by Vic Laranja,
-Shane Hummus and Hardik Pandya; [CREDITS.md](CREDITS.md) names them and the
-licenses of the tools it installs.
-
 ## Questions and feedback
 
 Write to The AI-Augmented Scholar at aiaugmentedscholar@gmail.com.
+
+## License and Credits
+
+**License.** The plugin is free under the MIT License, Copyright (c) 2026
+The AI-Augmented Scholar. You can use it, change it and pass it on, also in
+paid work. Keep the copyright notice and the license text with it. The full
+text is in [LICENSE](LICENSE).
+
+**Credits.** The plugin passes on work by these people. Thank you to each
+of them.
+
+- **Vic Laranja**, Systems by Vic: the skills `perfect-cuts` and
+  `perfect-clips`. YouTube:
+  [youtube.com/@systemsbyvic](https://www.youtube.com/@systemsbyvic). Web:
+  [systemsbyvic.com](https://systemsbyvic.com). MIT License, Copyright (c)
+  2026 Systems by Vic; the license ships in each skill's folder.
+- **Shane Hummus**: the "Holy Trifecta" method behind `first-impression`
+  (the title, the thumbnail and the opening make one promise). YouTube:
+  [youtube.com/@ShaneHummus](https://www.youtube.com/@ShaneHummus). The skill
+  is written new; his wording is not copied.
+- **Hardik Pandya**: the stop-slop writing rules, adapted inside
+  `perfect-clips`. Web: [hvpandya.com](https://hvpandya.com). Code:
+  [github.com/hardikpandya/stop-slop](https://github.com/hardikpandya/stop-slop).
+  MIT License, Copyright (c) 2025 Hardik Pandya.
+
+**Tools under their own licenses.** Setup installs open-source tools that
+keep their own licenses: Parakeet and parakeet-mlx for transcription,
+DeepFilterNet for noise removal, pypdfium2 for slide decks, and ffmpeg.
+The fonts Inter and Montserrat ship under the SIL Open Font License.
+
+**Remotion**, which draws the text cards, is not MIT. It is free for
+individuals, for companies with up to 3 employees, and for non-profit
+organizations, universities included. A larger for-profit company needs a
+Remotion company license: [remotion.dev/license](https://www.remotion.dev/license).
+
+[CREDITS.md](CREDITS.md) lists every credit and license in full.
