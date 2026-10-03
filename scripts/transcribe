@@ -1,0 +1,259 @@
+#!/usr/bin/env python3
+"""Transcribe audio locally with Parakeet TDT 0.6b v3 (MLX, Apple Silicon).
+
+A thin, friendly front end for the `parakeet-mlx` CLI. Two reasons it exists:
+
+  1. `parakeet-mlx` defaults to writing an .srt file into the current
+     directory. The common case is "show me the words", so this prints plain
+     text to stdout and writes nothing unless asked.
+  2. The diarization pipeline in the `transcribe-multispeaker` skill wants
+     Whisper-shaped JSON with per-word timestamps. Parakeet emits sentences
+     with sub-word tokens instead, so `--words` reassembles them.
+
+Parakeet TDT v3 auto-detects its language across 25 European languages. There
+is no language flag to pass, and none is needed.
+
+Usage:
+  transcribe recording.m4a                    # plain text to stdout
+  transcribe *.wav --srt --outdir subs/       # subtitle files
+  transcribe interview.wav --words out.json   # word timestamps for diarization
+  transcribe a.wav b.wav --quiet              # text only, no progress noise
+
+Stdlib only, so /usr/bin/python3 (3.9) can run it.
+"""
+import argparse
+import json
+import os
+import shutil
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+MODEL = "mlx-community/parakeet-tdt-0.6b-v3"
+
+# A GUI-launched app or a launchd job gets a bare PATH, so resolve the two
+# executables by absolute path rather than trusting the environment.
+# The plugin's own environment comes first. Skills call this script with
+# TV_DATA set to the plugin data folder, where setup installs parakeet-mlx.
+CANDIDATE_CLI = [
+    Path(os.environ.get("TV_DATA", "/nonexistent")) / "venv/bin/parakeet-mlx",
+    Path.home() / ".local/bin/parakeet-mlx",
+    Path.home() / ".local/share/uv/tools/parakeet-mlx/bin/parakeet-mlx",
+]
+HOMEBREW_BIN = "/opt/homebrew/bin"
+
+
+def find_cli():
+    for p in CANDIDATE_CLI:
+        if p.is_file() and os.access(str(p), os.X_OK):
+            return str(p)
+    found = shutil.which("parakeet-mlx")
+    if found:
+        return found
+    sys.exit(
+        "ERROR: parakeet-mlx is not installed.\n"
+        "  Run /teaching-video:setup in Claude Code to install it."
+    )
+
+
+def run_parakeet(cli, audios, workdir, chunk_duration=None):
+    """Transcribe every file into workdir as JSON. Returns the parsed results."""
+    cmd = [cli, "--output-format", "json", "--output-dir", str(workdir)]
+    if chunk_duration is not None:
+        cmd += ["--chunk-duration", str(chunk_duration)]
+    cmd += [str(a) for a in audios]
+
+    # parakeet-mlx shells out to a bare `ffmpeg` for anything that is not
+    # already a plain WAV, and a launchd or ssh environment lacks Homebrew.
+    env = dict(os.environ)
+    if HOMEBREW_BIN not in env.get("PATH", "").split(":"):
+        env["PATH"] = HOMEBREW_BIN + ":" + env.get("PATH", "")
+
+    proc = subprocess.run(cmd, env=env, stdout=subprocess.PIPE,
+                          stderr=subprocess.PIPE)
+    if proc.returncode != 0:
+        sys.stderr.write(proc.stderr.decode("utf-8", "replace"))
+        sys.exit(proc.returncode)
+
+    results = []
+    for audio in audios:
+        out = Path(workdir) / (Path(audio).stem + ".json")
+        if not out.is_file():
+            sys.exit("ERROR: parakeet produced no output for %s" % audio)
+        with open(out) as f:
+            results.append((Path(audio), json.load(f)))
+    return results
+
+
+def to_words(result):
+    """Reassemble Parakeet's sub-word tokens into whole words.
+
+    Parakeet splits words into pieces ("obser", "vation"). A piece that opens
+    with a space starts a new word; the rest continue the current one. A word's
+    span runs from its first piece's start to its last piece's end, and its
+    confidence is the lowest of its pieces — the weakest piece is what makes
+    the word doubtful.
+
+    Parakeet also emits a bare space as its own token, which is how it keeps
+    "September" apart from "9". Dropping such a token would glue the two
+    together, so it closes the current word and its whitespace carries over as
+    the next word's prefix. Callers rebuild the text by joining the word
+    strings, so that leading space has to survive.
+    """
+    words = []
+    for sentence in result.get("sentences", []):
+        current = None
+        pending_space = ""
+        for tok in sentence.get("tokens", []):
+            text = tok.get("text", "")
+            if not text:
+                continue
+            if not text.strip():
+                # A separator token: close the word, keep the whitespace.
+                if current is not None:
+                    words.append(current)
+                    current = None
+                pending_space += text
+                continue
+            if current is None or text.startswith((" ", " ")):
+                if current is not None:
+                    words.append(current)
+                current = {
+                    "word": pending_space + text,
+                    "start": float(tok.get("start", sentence.get("start", 0.0))),
+                    "end": float(tok.get("end", sentence.get("end", 0.0))),
+                    "probability": float(tok.get("confidence", 0.0)),
+                }
+                pending_space = ""
+            else:
+                current["word"] += text
+                current["end"] = float(tok.get("end", current["end"]))
+                current["probability"] = min(
+                    current["probability"], float(tok.get("confidence", 0.0)))
+        if current is not None:
+            words.append(current)
+    for w in words:
+        w["probability"] = round(w["probability"], 4)
+    return words
+
+
+def to_whisper_shape(result):
+    """Re-cast a Parakeet result as the Whisper JSON that merge.py consumes."""
+    segments = []
+    for i, sentence in enumerate(result.get("sentences", [])):
+        seg_words = to_words({"sentences": [sentence]})
+        segments.append({
+            "id": i,
+            "start": float(sentence.get("start", 0.0)),
+            "end": float(sentence.get("end", 0.0)),
+            "text": sentence.get("text", ""),
+            "words": seg_words,
+        })
+    return {
+        "text": result.get("text", ""),
+        # Parakeet auto-detects but does not report which language it picked.
+        "language": None,
+        "segments": segments,
+        "model": MODEL,
+    }
+
+
+def srt_time(seconds, comma=True):
+    ms = int(round(seconds * 1000))
+    h, ms = divmod(ms, 3600000)
+    m, ms = divmod(ms, 60000)
+    s, ms = divmod(ms, 1000)
+    sep = "," if comma else "."
+    return "%02d:%02d:%02d%s%03d" % (h, m, s, sep, ms)
+
+
+def render_srt(result):
+    lines = []
+    for i, s in enumerate(result.get("sentences", []), 1):
+        lines.append(str(i))
+        lines.append("%s --> %s" % (srt_time(s.get("start", 0.0)),
+                                    srt_time(s.get("end", 0.0))))
+        lines.append(s.get("text", "").strip())
+        lines.append("")
+    return "\n".join(lines)
+
+
+def render_vtt(result):
+    lines = ["WEBVTT", ""]
+    for s in result.get("sentences", []):
+        lines.append("%s --> %s" % (srt_time(s.get("start", 0.0), False),
+                                    srt_time(s.get("end", 0.0), False)))
+        lines.append(s.get("text", "").strip())
+        lines.append("")
+    return "\n".join(lines)
+
+
+def main():
+    ap = argparse.ArgumentParser(
+        prog="transcribe",
+        description="Transcribe audio locally with Parakeet TDT 0.6b v3.",
+        epilog="Parakeet auto-detects its language; there is no language flag.")
+    ap.add_argument("audio", nargs="+", help="Audio or video files")
+    ap.add_argument("--txt", action="store_true",
+                    help="Also write a .txt file per input")
+    ap.add_argument("--srt", action="store_true",
+                    help="Write a .srt subtitle file per input")
+    ap.add_argument("--vtt", action="store_true",
+                    help="Write a .vtt subtitle file per input")
+    ap.add_argument("--json", action="store_true",
+                    help="Write Parakeet's own .json per input")
+    ap.add_argument("--words", metavar="FILE", default=None,
+                    help="Write Whisper-shaped JSON with word timestamps. "
+                         "One input file only.")
+    ap.add_argument("--outdir", default=None,
+                    help="Where files go (default: beside each input)")
+    ap.add_argument("--chunk-duration", type=float, default=None,
+                    help="Seconds per chunk for long audio; 0 disables chunking")
+    ap.add_argument("--quiet", action="store_true",
+                    help="Do not print the transcript to stdout")
+    args = ap.parse_args()
+
+    audios = []
+    for a in args.audio:
+        p = Path(a).expanduser()
+        if not p.is_file():
+            sys.exit("ERROR: no such file: %s" % a)
+        audios.append(p.resolve())
+
+    if args.words and len(audios) > 1:
+        sys.exit("ERROR: --words takes one input file, not %d" % len(audios))
+
+    cli = find_cli()
+    with tempfile.TemporaryDirectory(prefix="transcribe-") as work:
+        results = run_parakeet(cli, audios, work, args.chunk_duration)
+
+        for audio, result in results:
+            dest = Path(args.outdir).expanduser() if args.outdir else audio.parent
+            if any([args.txt, args.srt, args.vtt, args.json]):
+                dest.mkdir(parents=True, exist_ok=True)
+
+            text = result.get("text", "").strip()
+            if not args.quiet:
+                if len(results) > 1:
+                    print("=== %s ===" % audio.name)
+                print(text)
+
+            if args.txt:
+                (dest / (audio.stem + ".txt")).write_text(text + "\n")
+            if args.srt:
+                (dest / (audio.stem + ".srt")).write_text(render_srt(result))
+            if args.vtt:
+                (dest / (audio.stem + ".vtt")).write_text(render_vtt(result))
+            if args.json:
+                (dest / (audio.stem + ".json")).write_text(
+                    json.dumps(result, ensure_ascii=False, indent=1))
+            if args.words:
+                out = Path(args.words).expanduser()
+                out.parent.mkdir(parents=True, exist_ok=True)
+                out.write_text(json.dumps(to_whisper_shape(result),
+                                          ensure_ascii=False))
+
+
+if __name__ == "__main__":
+    main()

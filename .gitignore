@@ -1,0 +1,29 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+Icon?
+
+# Node and the text-card renderer
+node_modules/
+out/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env/
+*.egg-info/
+
+# Media: never commit footage; the bundled test clip is the exception
+*.mov
+*.mp4
+!test-media/*.mov
+!test-media/*.mp4
+
+# The release scan and its commit hook stay local: the patterns name the
+# private details they search for.
+.release/
+.githooks/

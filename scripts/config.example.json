@@ -1,0 +1,28 @@
+{
+  "_comment": "Shape of ${CLAUDE_PLUGIN_DATA}/config.json. The setup skill writes it; every other skill reads it. Empty string or null = not set.",
+  "videos_root": "~/Movies/teaching-videos",
+  "editor": "iMovie",
+  "notion": {
+    "enabled": false,
+    "parent_page_id": ""
+  },
+  "look": {
+    "layout": "column",
+    "free_area": { "x": 0.05, "y": 0.15, "w": 0.40, "h": 0.70 },
+    "background_luminance": null,
+    "plate": false,
+    "plate_color": "#202020",
+    "plate_opacity": 0.7,
+    "text_color": "#FFFFFF",
+    "font": "Inter",
+    "font_file": ""
+  },
+  "slides": {
+    "layout": "side-by-side",
+    "speaker_side": "right",
+    "speaker_x": 0.5,
+    "background": null
+  },
+  "music_folder": "",
+  "signoff": ""
+}

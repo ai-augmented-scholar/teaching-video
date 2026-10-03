@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/bin/sh",
+            "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/check-tools.sh"],
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

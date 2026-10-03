@@ -1,0 +1,22 @@
+{
+  "name": "text-treatments-renderer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Animated text treatments for educational videos: one clip holding every card in sequence, rendered with alpha, on green for iMovie, or on a preview ground.",
+  "scripts": {
+    "setup": "node setup.mjs",
+    "studio": "remotion studio",
+    "render": "remotion render"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.489",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.489"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.23",
+    "@types/react-dom": "18.3.7",
+    "typescript": "5.5.4"
+  }
+}
