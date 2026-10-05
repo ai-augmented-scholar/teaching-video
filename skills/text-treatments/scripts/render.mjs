@@ -156,7 +156,10 @@ for (const mode of args.modes.split(",").map((m) => m.trim()).filter(Boolean)) {
   if (!m) fail(`unknown mode "${mode}" (alpha, imovie, ground)`);
   const target = join(OUT, m.file);
   const t0 = Date.now();
-  const r = remotion(["render", "src/index.ts", `neutral-${mode}`, target, `--props=${propsPath}`, ...m.flags]);
+  // --timeout: a long alpha render keeps every browser tab busy writing PNG
+  // frames, and the bundled font then takes longer than Remotion's 28 s
+  // default to load in a new tab (seen on a 96 s, 60 fps package).
+  const r = remotion(["render", "src/index.ts", `neutral-${mode}`, target, `--props=${propsPath}`, "--timeout=120000", ...m.flags]);
   if (r.status !== 0) fail(`render of ${mode} failed:\n${(r.stderr || r.stdout).slice(-3000)}`);
   summary.outputs.push({mode, file: target, seconds: Math.round((Date.now() - t0) / 100) / 10});
 }
@@ -177,7 +180,7 @@ if (args.check) {
   mkdirSync(tmp, {recursive: true});
   const r = remotion([
     "render", "src/index.ts", "neutral-ground", tmp, `--props=${propsPath}`,
-    "--sequence", "--image-format=png",
+    "--sequence", "--image-format=png", "--timeout=120000",
   ]);
   if (r.status !== 0) fail(`check render failed:\n${(r.stderr || r.stdout).slice(-3000)}`);
   const files = readdirSync(tmp).filter((f) => f.endsWith(".png")).sort();

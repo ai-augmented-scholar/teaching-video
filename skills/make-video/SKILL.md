@@ -84,8 +84,8 @@ Run them in order. "You" steps belong to the user (see "A step that is yours").
 | 03 | Claude | Clean the sound | `audio-enhance` on the **raw take** → `<stem>_enhanced-audio.<ext>` |
 | 04 | Claude | Cut the retakes | `perfect-cuts` on the **cleaned file from 03**, never the raw take → `1 WATCH - final video (C).mp4`; then the audio gate |
 | 05 | You | Review the cut | watch the MP4 once; changes go back to 04 |
-| 06 | Claude | Text cards **or** slides | ask about a slide deck → `video-with-slides` or `text-treatments` |
-| 07 | You | Assemble | iMovie, or any editor |
+| 06 | Claude | Text cards **or** slides | ask about a slide deck → `video-with-slides`, or the card text from `text-treatments` |
+| 07 | You, then Claude | Assemble | iMovie, or any editor; then Claude burns the text cards into the export |
 | 08 | Claude + You | Title, opening, thumbnail | `first-impression` → `first-impression.html`; the user makes the thumbnail |
 | 09 | Claude | Captions and description | `captions-and-description` on the user's **final export**; then the audio gate |
 | 10 | You | Publish | upload by hand to the course site |
@@ -184,23 +184,20 @@ Ask one question: **"Does this lecture have a slide deck you want on screen?"**
   (C).mp4`) with the deck. Its output has the cut's sound and length, so it
   becomes the video the user assembles. `set 06 done --choice path=slides
   --output "<cut name>-with-slides.mp4"`.
-- **No** → run `text-treatments` with the cut video as `--footage`. It writes
-  the cards from the transcript, shows the wording first, renders, and checks one
-  card over the footage. `set 06 done --choice path=text-cards --output
-  "<video folder>/text-cards/text-cards-imovie-green.mov"` (add the alpha file
-  as a second `--output` when it was rendered).
+- **No** → run `text-treatments` Step 1 only: it writes the cards from the
+  transcript, each with the words it belongs to, and shows the wording first.
+  Nothing renders yet: the cards are burned into the final export at the end of
+  step 07. `set 06 done --choice path=text-cards --output
+  "<video folder>/text-cards/cards.json"`.
 - The user wants neither: `set 06 skipped`.
 
 ### 07 Assemble
 
 A "you" step. Notify, then give the hand-off in plain words:
 
-- **With text cards, in iMovie:** import the cut MP4 and
-  `text-cards-imovie-green.mov`; for each card, select its range (times in
-  `text-cards-card-times.txt`), drag it above the main video, and set the
-  overlay to **Green/Blue Screen** with the playhead on a plain green frame.
-  In Final Cut, Premiere or Resolve, use `text-cards-alpha.mov` on the track
-  above instead; it needs no keying.
+- **With text cards:** put the video together **without** the cards (the
+  background, any screen recordings, anything else). Claude adds the cards
+  afterwards, each at its words.
 - **With slides:** the `-with-slides.mp4` already is the video; import it and
   add anything else they want.
 - Then: export the finished video into the video folder (in iMovie: File >
@@ -214,7 +211,15 @@ ask which file they exported:
 python3 "${CLAUDE_PLUGIN_ROOT}/skills/captions-and-description/scripts/find_export.py" "<video folder>"
 ```
 
-Check the chosen file with `ffprobe`, and `set 07 done --output "<final export>"`.
+Check the chosen file with `ffprobe`.
+
+**If step 06 chose text cards**, burn them in now: run `text-treatments` Steps
+2 to 4 on this export (place, show the timing table and wait for approval,
+render, burn, look at the contact sheet). The result,
+`<export name>-with-cards.mp4`, is the final export from here on:
+`set 07 done --output "<video folder>/<export name>-with-cards.mp4"`.
+
+Otherwise `set 07 done --output "<final export>"`.
 Every later step takes the export from step 07's output in the status file.
 
 ### 08 Title, opening and thumbnail

@@ -1,6 +1,6 @@
 ---
 name: text-treatments
-description: Make animated text cards (hook, title, pull quote, lower third, step list, end card) for an educational video with talking-head footage, written from the speaker's own words in the transcript. One clip holds every card in sequence; the user lifts each card out in iMovie, or any editor. Renders a green-screen file for iMovie and a file with a real alpha channel for editors that read one. On first use it asks where text can sit in the frame, whether the background is dark enough for white text, and which font to use, and saves the answers. Use when the user asks for text cards, titles, on-screen text, lower thirds, chapter cards or "text treatments" for a video.
+description: Make animated text cards (hook, title, pull quote, lower third, step list, end card) for an educational video with talking-head footage, written from the speaker's own words in the transcript, and burn them into the user's finished video, each card at the moment its words are spoken. On first use it asks where text can sit in the frame, whether the background is dark enough for white text, and which font to use, and saves the answers. Use when the user asks for text cards, titles, on-screen text, lower thirds, chapter cards or "text treatments" for a video.
 ---
 
 # Text treatments
@@ -11,18 +11,24 @@ free, with a dark plate behind it when the background is too light.
 
 ## What this produces
 
-**One clip, many cards.** Every card is a self-contained scene, laid end to
-end. The user scrubs to a card, cuts it out and places it where it belongs.
-Never deliver one file per card.
+**The user's finished video, with the cards in it.** Each card appears when
+the speaker says the words it belongs to, and stays long enough to read. The
+user does no placing by hand.
 
-In the video's folder, under `text-cards/`:
+The work has two halves, because the cards go on the user's **final export**
+(the video after they have put it together in their editor):
 
-| File | For |
+1. Before the edit: write the cards (Step 1). The user approves the wording.
+2. After the export: place, render and burn (Steps 2 to 4).
+
+Files, in the video's folder:
+
+| File | What |
 |---|---|
-| `text-cards-imovie-green.mov` | iMovie. The cards on pure green, removed with iMovie's Green/Blue Screen overlay. |
-| `text-cards-alpha.mov` | Editors that read an alpha channel: Final Cut Pro, Premiere Pro, DaVinci Resolve, and others. ProRes 4444; drops straight on top of the footage. |
-| `text-cards-card-times.txt` | Where each card starts and ends in the clip. |
-| `cards.json` | The card text. Edit it and render again to change a word. |
+| `text-cards/cards.json` | The card text and the words each card belongs to. Edit it and run again to change a word. |
+| `text-cards/cards-timed.json` | The same cards with their start, length and row times on the export's clock. |
+| `text-cards/text-cards-alpha.mov` | Every card in sequence, with a real alpha channel. The source of the burn. |
+| `<export name>-with-cards.mp4` | **The deliverable**: the export with the cards burned in. Sound unchanged. |
 
 A preview on a grey ground (`--modes ground`) is available when the user wants
 to read the cards without footage.
@@ -99,38 +105,77 @@ Pull from it:
 - the close: what comes next, or where the readings are.
 
 Write the cards in the speaker's own words, compressed. Never invent a claim, a
-number, a name or a date the video does not say. Keep headlines short: a card
-is read in about four seconds.
+number, a name or a date the video does not say. Keep headlines short.
+
+Give every card the words it belongs to, copied from the transcript:
+
+- `anchor`: the words the speaker says when the card should appear (four to
+  six words are enough to be unique).
+- `itemAnchors`: for a step list, the words that bring in each item, in order.
+  Each item then appears as it is spoken.
+- `until`: the words after which the card leaves. Set it on a step list that
+  should stay while the speaker talks through it, and on any card whose topic
+  runs on.
+- `at`: only when the anchor is said twice: about where, in seconds.
+
+**Card length: this is a teaching video, not the news.** Do not write `dur`;
+Step 2 computes it. A simple card stays at least 8 seconds, longer when its text
+needs more reading time. A step list stays until its last item has been on
+screen at least 4 seconds, and stays with the speaker when `until` says so. A
+card never leaves in the middle of a sentence and never runs into the next card.
 
 Save them as `<video folder>/text-cards/cards.json`:
 
 ```json
 {"cards": [
-  {"kind": "hook", "dur": 4, "eyebrow": "Week 3", "headline": "…", "dek": "…"},
-  {"kind": "title", "dur": 4.5, "eyebrow": "Part 1", "headline": "…"},
-  {"kind": "pullQuote", "dur": 4.5, "quote": "…", "attribution": "…"},
-  {"kind": "lowerThird", "dur": 4, "name": "…", "role": "…"},
-  {"kind": "stepList", "dur": 6.5, "eyebrow": "…", "items": ["…", "…", "…"]},
-  {"kind": "endCard", "dur": 4.5, "signOff": "…", "cta": "…"}
+  {"kind": "hook", "eyebrow": "Week 3", "headline": "…", "dek": "…", "anchor": "…"},
+  {"kind": "title", "eyebrow": "Part 1", "headline": "…", "anchor": "…"},
+  {"kind": "pullQuote", "quote": "…", "attribution": "…", "anchor": "…"},
+  {"kind": "lowerThird", "name": "…", "role": "…", "anchor": "…"},
+  {"kind": "stepList", "eyebrow": "…", "items": ["…", "…", "…"],
+   "anchor": "…", "itemAnchors": ["…", "…", "…"], "until": "…"},
+  {"kind": "endCard", "signOff": "…", "cta": "…", "anchor": "…"}
 ]}
 ```
 
-- A step list may take `delays` (seconds from the card's start, one per item),
-  so each item lands on the spoken word.
 - An end card may take `dek` (a second, smaller line), and `markSrc` /
   `markOpacity` for the user's own logo file in `renderer/public/`.
 - With `layout: "lower-thirds"`, keep step lists to 3 items and headlines to
   about 6 words: everything has to fit in the bottom band.
-- Show the user the card text before rendering. It is their wording on screen.
+- Show the user the card text before going on. It is their wording on screen.
 
-## Step 2 — Render
+Then the user puts the video together in their editor and exports it **without
+cards**. Continue at Step 2 with that export.
+
+## Step 2 — Place the cards on the export
+
+```bash
+TV_DATA="${CLAUDE_PLUGIN_DATA}" python3 "${CLAUDE_PLUGIN_ROOT}/skills/text-treatments/scripts/burn_cards.py" \
+  plan "<final export>" --cards "<video folder>/text-cards/cards.json" \
+  --out-dir "<video folder>/text-cards"
+```
+
+It transcribes the export with Parakeet (about 12 seconds for 7 minutes of
+video; the words are kept and reused while the export does not change), finds
+each card's words, and prints a table: in, out, length, the words it heard, the
+item times. Show the user the table and every `!` note:
+
+- `ANCHOR NOT HEARD` or `ROW n NOT HEARD`: fix the words in `cards.json`
+  (copy them from the transcript), and run again.
+- `SAID 2x`: add `at` to that card.
+- `SHORT`: the next card starts too soon for this one. Move one of them, or
+  accept it.
+
+Wait for the user's approval of the times.
+
+## Step 3 — Render
 
 ```bash
 TV_DATA="${CLAUDE_PLUGIN_DATA}" node "${CLAUDE_PLUGIN_ROOT}/skills/text-treatments/scripts/render.mjs" \
-  --cards "<video folder>/text-cards/cards.json" \
+  --cards "<video folder>/text-cards/cards-timed.json" \
   --out "<video folder>/text-cards" \
-  --footage "<the cut video>" \
-  --modes alpha,imovie --check
+  --footage "<final export>" \
+  --modes alpha --check
 ```
 
 - The script copies the renderer into `${CLAUDE_PLUGIN_DATA}/renderer` and
@@ -142,49 +187,31 @@ TV_DATA="${CLAUDE_PLUGIN_DATA}" node "${CLAUDE_PLUGIN_ROOT}/skills/text-treatmen
 - `--check` verifies the cut contract (below) on lossless frames and reports
   any card that does not start and end on the bare ground. A report with pops
   is a defect: fix the scene before delivering.
-- A five-card package renders in about a minute per mode.
+- Always render from `cards-timed.json`, the file Step 2 wrote. The burn
+  checks that the clip and the times come from the same file.
+- About 2.5 minutes for 100 seconds of cards at 60 fps.
 
-## Step 3 — Look at it before you hand it over
-
-Take a frame of the user's own footage and put one card over it:
+## Step 4 — Burn the cards in, and look before you hand it over
 
 ```bash
-ffmpeg -v error -y -ss 30 -i "<footage>" -frames:v 1 -vf scale=1920:1080 /tmp/bg.png
-ffmpeg -v error -y -i /tmp/bg.png -ss 2.5 -i "<out>/text-cards-alpha.mov" \
-  -filter_complex "[1:v]format=rgba[o];[0:v][o]overlay=0:0:format=auto" -frames:v 1 /tmp/card.png
+python3 "${CLAUDE_PLUGIN_ROOT}/skills/text-treatments/scripts/burn_cards.py" \
+  burn "<final export>" --timed "<video folder>/text-cards/cards-timed.json" \
+  --clip "<video folder>/text-cards/text-cards-alpha.mov" \
+  --out "<video folder>/<export name>-with-cards.mp4" \
+  --sheet "<video folder>/text-cards/cards-sheet.png"
 ```
 
-View `/tmp/card.png`. Check that the text sits in the free area, clears the
+One ffmpeg pass; the sound is copied unchanged (about 4 minutes for a 7-minute
+video). `--sheet` tiles one frame per card, taken when the card's text is
+complete. View it. Check that the text sits in the free area, clears the
 speaker, reads against the background, and shows no text under 24 px. Fix and
-re-render before you report.
+run again before you report.
 
 ## Hand-off
 
-Tell the user which file to use, in plain words.
-
-**iMovie:**
-1. Import `text-cards-imovie-green.mov` into the project.
-2. Open `text-cards-card-times.txt` to see where each card sits in the clip.
-3. In the clip, select just the range of one card, and drag it **above** the
-   main video, at the moment where it belongs.
-4. Leave the playhead on the first frame of that overlay, where it is plain
-   green. Click the Video Overlay Settings button, and choose **Green/Blue
-   Screen** from the pop-up menu. iMovie removes the colour that fills the
-   frame under the playhead, so that frame must be green.
-5. If a thin edge shows around the letters, drag the **Softness** slider a
-   little. Set softness before using Clean-up: changing softness afterwards
-   resets the clean-up.
-
-In iMovie a plate shows as solid dark grey, without the see-through effect:
-a keyer cannot cut a half-transparent plate cleanly, so the green-screen file
-draws it opaque with hard edges. For the same reason the second-level text
-(eyebrows, deks, roles) is drawn in a solid light grey there, mixed over the
-plate or over the measured background, rather than as translucent white:
-translucent white over green turns pale green, and the key greys it out.
-
-**Final Cut Pro, Premiere Pro, DaVinci Resolve, and other editors that read
-alpha:** put `text-cards-alpha.mov` on the track above the footage and blade
-out each card. It needs no keying.
+Tell the user in plain words: `<export name>-with-cards.mp4` is the finished
+video. Their own export stays as it was. To change a word or a time, edit
+`cards.json` and run Steps 2 to 4 again; nothing has to be redone in the editor.
 
 ## How the renderer works (for changes to it)
 
@@ -229,8 +256,11 @@ choreography stretch instead of clip.
 > the pull quote, lower third and end card collapse to zero size. If you add a
 > wrapper, keep the layout styles on the element that holds the children.
 
-**Modes.** `alpha` (transparent ground), `imovie` (pure `#00FF00` ground; plate
-opaque with hard edges), `ground` (dark grey preview). Compositions are named
+**Modes.** `alpha` (transparent ground; the source of the burn), `imovie` (pure
+`#00FF00` ground; plate opaque with hard edges; kept for a user who wants to
+place cards by hand in iMovie), `ground` (dark grey preview).
+
+**Placement** is `scripts/place_cards.py`, called by `burn_cards.py plan`. Compositions are named
 `neutral-<mode>`.
 
 **Fonts.** Inter ships in `renderer/public/fonts/` (SIL Open Font License,

@@ -29,11 +29,13 @@ The plugin follows one workflow, from a beat sheet to a finished video, in
 
 **You finish it**
 
-6. Claude makes animated text cards from your own words: a title, step
+6. Claude writes animated text cards from your own words: a title, step
    cards, a pull quote, a lower third, an end card. If your lecture has a
    slide deck, Claude puts the slides beside you instead, timed to what you
    say (`video-with-slides`).
-7. You put the cut and the cards together in iMovie, or any video editor.
+7. You put the video together in iMovie, or any video editor, and export it.
+   Claude then burns the text cards into your export, each one at the moment
+   you say its words, and long enough to read.
 8. You make a thumbnail in Canva or any image app. Claude suggests the
    title, the thumbnail idea and the opening as one promise.
 9. Claude writes the captions file, a full transcript and a description
