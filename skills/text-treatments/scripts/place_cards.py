@@ -30,7 +30,8 @@ Length rules. A teaching video is read, not glanced at:
     reading time (2.5 words per second, plus 1.5 seconds).
   - A build stays until its last row has been on screen for at least 4
     seconds (longer for a long row), and never less than 8 seconds in total.
-  - `until` overrides both: the card leaves just after those words.
+  - `until` makes a card stay until just after those words, but never
+    shorter than the two minimums above.
   - Otherwise the card does not leave in the middle of a sentence: it stays to
     the end of the sentence or the next pause, when that comes within 6
     seconds.
@@ -382,9 +383,11 @@ def place(cards, words, duration, fps):
         if c.get("until") and not c.get("fixedDur"):
             m = find(words, c["until"], lo=start)
             if m:
-                end = m[1] + UNTIL_PAD
-                if end - start < want:
-                    notes.append("UNTIL comes early (%.1f s)" % (end - start))
+                # `until` stretches a card; it never cuts below the reading minimum
+                end = max(start + want, m[1] + UNTIL_PAD)
+                if m[1] + UNTIL_PAD < start + want:
+                    notes.append("until-words come at %.1f s; kept the %.1f s minimum"
+                                 % (m[1] + UNTIL_PAD - start, want))
             else:
                 notes.append("UNTIL NOT HEARD")
         elif not c.get("fixedDur"):
