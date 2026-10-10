@@ -10,7 +10,7 @@ description: >
   editor. The whole chain is ONE deterministic script; the model runs it and
   relays its report, and never runs the ffmpeg steps by hand. Use when the
   user asks to clean up, enhance, fix or process the audio of a recording, or
-  runs /teaching-video:audio-enhance.
+  runs /video-teach-plugin:audio-enhance.
 allowed-tools:
   - Bash
   - Read
@@ -44,7 +44,7 @@ TV_DATA="${CLAUDE_PLUGIN_DATA}" python3 "${CLAUDE_PLUGIN_ROOT}/skills/audio-enha
 
 ### Requirements
 
-The plugin's setup skill installs everything (`/teaching-video:setup`). If the script prints `MISSING ...` and exits 2, tell the user to run setup; do not install tools by hand from inside this skill.
+The plugin's setup skill installs everything (`/video-teach-plugin:setup`). If the script prints `MISSING ...` and exits 2, tell the user to run setup; do not install tools by hand from inside this skill.
 
 - **ffmpeg** with the `loudnorm`, `ebur128`, `acompressor`, `alimiter`, `lowshelf`, `highshelf`, `equalizer`, `astats`, `ametadata`, `volumedetect` and `silencedetect` filters. The standard Homebrew build has all of them.
 - **DeepFilterNet** in the plugin's private environment. It needs **Python 3.11** — its Rust core (`deepfilterlib`) ships no prebuilt wheels for Python 3.12 or newer — and torch/torchaudio below 2.9, plus `soundfile`. The first run downloads the DeepFilterNet3 model (small) into `~/Library/Caches/DeepFilterNet/`.
@@ -427,7 +427,7 @@ The last three columns are the deliverable spec — always state them explicitly
 
 ## Error handling
 
-- Missing `ffmpeg` or `deepFilter`: the script prints a hint and exits 2. Tell the user to run `/teaching-video:setup`; don't guess a workaround.
+- Missing `ffmpeg` or `deepFilter`: the script prints a hint and exits 2. Tell the user to run `/video-teach-plugin:setup`; don't guess a workaround.
 - Input file not found, or folder contains no audio or video files: report and stop.
 - Video input with no audio stream: report and stop (Step 1).
 - Duration gate failure on a video input (Step 10a): report both durations and the delta, keep the WAV, and do not produce a video file. A missing video file is a recoverable problem; a silently out-of-sync one is not.

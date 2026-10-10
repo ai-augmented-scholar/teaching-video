@@ -53,7 +53,7 @@ if (!args.out) fail("--out <folder> is required");
 const expand = (p) => (p && p.startsWith("~/") ? join(homedir(), p.slice(2)) : p);
 const DATA = expand(args.data || process.env.TV_DATA || "");
 if (!DATA || !existsSync(DATA)) {
-  fail("the plugin data folder is missing. Run /teaching-video:setup first.");
+  fail("the plugin data folder is missing. Run /video-teach-plugin:setup first.");
 }
 const OUT = resolve(expand(args.out));
 mkdirSync(OUT, {recursive: true});

@@ -1,6 +1,6 @@
 ---
 name: make-video
-description: Run the whole teaching-video workflow for an educational video with talking-head footage, from beat sheet to finished video and short clips, in 14 steps. Claude does the sound, the cut, the text cards or slides, the captions and the clips; the user drafts, films, reviews, assembles in iMovie (or any editor) and publishes by hand. Keeps a status file in the video's folder, stops with a Mac notification at every step that is the user's, and picks up where it left off after a break. Use when the user says "make a video", "start a new lecture video", "continue my video", "where was I", or runs /teaching-video:make-video.
+description: Run the whole video-teach-plugin workflow for an educational video with talking-head footage, from beat sheet to finished video and short clips, in 14 steps. Claude does the sound, the cut, the text cards or slides, the captions and the clips; the user drafts, films, reviews, assembles in iMovie (or any editor) and publishes by hand. Keeps a status file in the video's folder, stops with a Mac notification at every step that is the user's, and picks up where it left off after a break. Use when the user says "make a video", "start a new lecture video", "continue my video", "where was I", or runs /video-teach-plugin:make-video.
 ---
 
 # make-video: the whole workflow, one step at a time
@@ -64,7 +64,7 @@ in the middle leaves an honest record.
      time?"** On a yes, go on. On a no, run the look questions of
      `text-treatments` (its Step 0) before step 01.
    - It prints `none`, or there is no settings file at all: the computer has not
-     been set up. If `/teaching-video:setup` has never run (no settings file),
+     been set up. If `/video-teach-plugin:setup` has never run (no settings file),
      ask the user to run it first; it installs the tools and asks these
      questions. If only the look is missing, ask the three look questions now,
      through `text-treatments` Step 0.
@@ -116,7 +116,7 @@ with `ffprobe` (duration, a video and an audio stream), then
 raw take, as its SKILL.md says (it is one script; relay its table and every
 `WARNING:` line). Its output for a video is `<stem>_enhanced-audio.<ext>` next to
 the raw take. `set 03 done --output "<that file>"`. If it prints `MISSING`, the
-tools are not installed: point the user to `/teaching-video:setup` and stop.
+tools are not installed: point the user to `/video-teach-plugin:setup` and stop.
 
 ### 04 Cut the retakes
 
@@ -282,7 +282,7 @@ At every "you" step, in this order:
    ```
 3. Tell the user exactly: what to do, which file to use (full name, and the
    folder), and how to come back: **"When you are done, say 'continue', or run
-   /teaching-video:make-video."**
+   /video-teach-plugin:make-video."**
 4. Stop. Do not start the next step in the same turn.
 
 When the user comes back, run `show` and continue at the waiting step: confirm
@@ -290,7 +290,7 @@ it is done (check the file it should have produced), mark it `done`, and go on.
 
 ## Prompts to remember
 
-- `/teaching-video:make-video` - start a new video, or continue the last one.
+- `/video-teach-plugin:make-video` - start a new video, or continue the last one.
 - "Continue my video." / "Where was I?" - shows the 14 steps and picks up.
 - "Start a new lecture video about <topic>."
 - "Go back to the cut." - reopens step 04.

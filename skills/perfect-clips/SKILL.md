@@ -1,6 +1,6 @@
 ---
 name: perfect-clips
-description: Turn a lecture video into short, ranked clips for course announcements, the course homepage, or a teaser for next week — upright 9:16 for phones, or wide clips of 2-6 minutes for a course page. For educational videos with talking-head footage. The transcript finds the moments that stand on their own, filler is cut from inside each clip, an on-screen headline and one-word captions are burned in, and an optional music bed sits underneath. Hands back plain MP4 files that work in iMovie, or any editor, and on any course site. Use when the user asks for clips, short clips, a teaser, highlights or excerpts from a lecture video, or runs /teaching-video:perfect-clips.
+description: Turn a lecture video into short, ranked clips for course announcements, the course homepage, or a teaser for next week — upright 9:16 for phones, or wide clips of 2-6 minutes for a course page. For educational videos with talking-head footage. The transcript finds the moments that stand on their own, filler is cut from inside each clip, an on-screen headline and one-word captions are burned in, and an optional music bed sits underneath. Hands back plain MP4 files that work in iMovie, or any editor, and on any course site. Use when the user asks for clips, short clips, a teaser, highlights or excerpts from a lecture video, or runs /video-teach-plugin:perfect-clips.
 license: MIT — see LICENSE
 compatibility: Claude Code on a Mac with Apple Silicon. Needs ffmpeg, the plugin's bundled `transcribe` (Parakeet via parakeet-mlx), and Node for captions (~400MB one-time). Optional OpenCV for recordings with more than one layout. The plugin's setup skill installs all of it.
 ---
@@ -23,7 +23,7 @@ survives, the waveform decides THE FRAME.**
   renderer) lives in `${CLAUDE_PLUGIN_DATA}/perfect-clips/` — called
   `<PC_HOME>` below.
 - Plugin settings live in `${CLAUDE_PLUGIN_DATA}/config.json` (written by
-  `/teaching-video:setup`). This skill reads `look.font`, `music_folder`
+  `/video-teach-plugin:setup`). This skill reads `look.font`, `music_folder`
   and `videos_root`, and works with defaults when the file is missing.
 - This skill runs in Claude Code on a Mac with Apple Silicon only. Anywhere
   else (claude.ai, another OS), say so plainly and stop — the pipeline
@@ -225,7 +225,7 @@ Read its output: set `$TRANSCRIBE`, `$WINDOWS`, `$PYCV` and `$FONT` from its
 `TRANSCRIBE=` / `WINDOWS=` / `PYCV=` / `FONT=` lines, and note `MUSIC=` for
 step 8.7. **Anything it reports MISSING → read references/setup-installs.md
 and follow its consent-gated recipe — the first answer is always
-`/teaching-video:setup`; do not improvise an install.** Standing rules:
+`/video-teach-plugin:setup`; do not improvise an install.** Standing rules:
 
 - Transcription is Parakeet TDT 0.6b v3 through the plugin's bundled
   `transcribe` — never Whisper or WhisperX. Apple Silicon only: on any other
@@ -786,7 +786,7 @@ you don't have the rights to a track, don't put it in the music folder.
 
 ## When to use
 
-Explicit invocation always works: `/teaching-video:perfect-clips` or naming
+Explicit invocation always works: `/video-teach-plugin:perfect-clips` or naming
 the skill. Typical asks: "make clips from this lecture", "cut a teaser for
 next week", "pull three short clips for the course announcement", "find
 the best moments in this video", "make phone-sized clips from this".

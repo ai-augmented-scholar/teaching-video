@@ -57,7 +57,7 @@ os.environ["PATH"] = os.pathsep.join(
 def need(tool):
     p = shutil.which(tool)
     if not p:
-        sys.exit("ERROR: %s is not installed. Run /teaching-video:setup." % tool)
+        sys.exit("ERROR: %s is not installed. Run /video-teach-plugin:setup." % tool)
     return p
 
 

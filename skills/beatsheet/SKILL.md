@@ -1,6 +1,6 @@
 ---
 name: beatsheet
-description: Write a beat sheet for an educational video with talking-head footage, such as a recorded lecture or a short explainer for a course. A beat sheet is brief bullet points per beat, never a word-for-word script, and it ends with a list of every screen insert and graphic to make before the edit. Saves a self-contained HTML page, beat-sheet.html, in the video's numbered folder and opens it in the browser; optionally mirrors it to Notion. Use when the user asks for a beat sheet, an outline to film from, a plan for a lecture video, or runs /teaching-video:beatsheet.
+description: Write a beat sheet for an educational video with talking-head footage, such as a recorded lecture or a short explainer for a course. A beat sheet is brief bullet points per beat, never a word-for-word script, and it ends with a list of every screen insert and graphic to make before the edit. Saves a self-contained HTML page, beat-sheet.html, in the video's numbered folder and opens it in the browser; optionally mirrors it to Notion. Use when the user asks for a beat sheet, an outline to film from, a plan for a lecture video, or runs /video-teach-plugin:beatsheet.
 ---
 
 # beatsheet
@@ -17,7 +17,7 @@ Read `${CLAUDE_PLUGIN_DATA}/config.json` if it exists. The keys this skill uses:
 - `signoff`: a closing line the user says at the end of every video. Empty or missing means no sign-off.
 - `notion.enabled` and `notion.parent_page_id`: the optional Notion mirror (step 7).
 
-If the file does not exist, use the defaults and say in one line that `/teaching-video:setup` saves these settings.
+If the file does not exist, use the defaults and say in one line that `/video-teach-plugin:setup` saves these settings.
 
 ## 2. Find or make the video folder
 

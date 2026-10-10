@@ -54,7 +54,7 @@ SPARSE_RATIO = 0.4   # below this share of the median words/second = sparse
 def load_samples(video):
     """Decode the audio once, mono 8 kHz signed 16-bit."""
     if not shutil.which("ffmpeg"):
-        sys.exit("ERROR: ffmpeg not found. Run /teaching-video:setup.")
+        sys.exit("ERROR: ffmpeg not found. Run /video-teach-plugin:setup.")
     p = subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-i", video, "-vn",
                         "-ac", "1", "-ar", str(RATE), "-f", "s16le", "-"],
                        capture_output=True)

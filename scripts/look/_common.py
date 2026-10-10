@@ -25,7 +25,7 @@ def find_tool(name):
         p = Path(d) / name
         if p.is_file():
             return str(p)
-    sys.exit("ERROR: %s is not installed. Run /teaching-video:setup." % name)
+    sys.exit("ERROR: %s is not installed. Run /video-teach-plugin:setup." % name)
 
 
 def parse_area(values):

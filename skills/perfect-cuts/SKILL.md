@@ -47,7 +47,7 @@ ls "${CLAUDE_PLUGIN_DATA}/venv/bin/parakeet-mlx" 2>/dev/null || ls ~/.local/bin/
 
 `transcribe` ships with this plugin at `${CLAUDE_PLUGIN_ROOT}/scripts/transcribe`. It is a small front end for `parakeet-mlx`; its `--words` flag writes exactly the `segments[].words[]` JSON that `speech_map.py` reads. Video in, blocks out, no intermediate audio extraction needed.
 
-If something is missing, tell the user to run `/teaching-video:setup`, which installs ffmpeg and Parakeet into the plugin's own environment. Parakeet runs on Apple Silicon only, through MLX on Metal. The first transcription downloads the model (about 2.3 GB) from Hugging Face.
+If something is missing, tell the user to run `/video-teach-plugin:setup`, which installs ffmpeg and Parakeet into the plugin's own environment. Parakeet runs on Apple Silicon only, through MLX on Metal. The first transcription downloads the model (about 2.3 GB) from Hugging Face.
 
 On a machine that is not Apple Silicon, say so plainly and stop rather than falling back to Whisper. The cut quality depends on the transcript, and a silent engine swap is the kind of change that shows up three steps later in the editorial pass.
 

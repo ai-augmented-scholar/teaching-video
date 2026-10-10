@@ -21,7 +21,7 @@ allowed-tools:
 # Audio Quality Check
 
 Diagnostic only. **This skill never modifies a file.** It measures, judges, and
-tells the user what to fix. The fixing is `/teaching-video:audio-enhance`'s job.
+tells the user what to fix. The fixing is `/video-teach-plugin:audio-enhance`'s job.
 
 $ARGUMENTS
 
@@ -35,7 +35,7 @@ python3 "${CLAUDE_PLUGIN_ROOT}/skills/audio-quality-check/scripts/analyze.py" "<
 file inside is analyzed). Multiple inputs are allowed. The script needs only
 the macOS system `python3` (3.9 or newer, standard library) plus `ffmpeg` and
 `ffprobe`; it finds Homebrew's copies even when they are not on PATH. If ffmpeg
-is missing, tell the user to run `/teaching-video:setup`.
+is missing, tell the user to run `/video-teach-plugin:setup`.
 
 | Option | Effect |
 |---|---|
@@ -111,10 +111,10 @@ The fraction of gated windows is reported as `gated_fraction` in the JSON.
 
 | Check fails | Cause | Fix |
 |---|---|---|
-| Loudness | normalized at the wrong point in the chain | Run `/teaching-video:audio-enhance`; it normalizes last, then limits |
-| True peak | no limiter, or the limiter sits before the gain | Run `/teaching-video:audio-enhance`; its last stage is a true-peak limiter |
-| Noise floor | room, fan, AC, computer, or mic gain too high | `/teaching-video:audio-enhance` runs DeepFilterNet; better still, fix the room |
-| Long silences | dead air left in the take | `/teaching-video:perfect-cuts` removes it |
+| Loudness | normalized at the wrong point in the chain | Run `/video-teach-plugin:audio-enhance`; it normalizes last, then limits |
+| True peak | no limiter, or the limiter sits before the gain | Run `/video-teach-plugin:audio-enhance`; its last stage is a true-peak limiter |
+| Noise floor | room, fan, AC, computer, or mic gain too high | `/video-teach-plugin:audio-enhance` runs DeepFilterNet; better still, fix the room |
+| Long silences | dead air left in the take | `/video-teach-plugin:perfect-cuts` removes it |
 | Level consistency | moving toward and away from the mic | Hold a fixed mic distance; `audio-enhance` compresses before it normalizes |
 | Clarity | too little voice over too much room | Raise gain, lower noise, record at 48 kHz |
 

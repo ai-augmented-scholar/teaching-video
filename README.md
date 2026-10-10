@@ -2,7 +2,7 @@
   <a href="https://aiaugmentedscholar.co"><img src="assets/owl-logo.png" width="160" alt="The AI-Augmented Scholar owl"></a>
 </p>
 
-# teaching-video
+# video-teach-plugin
 
 A free Claude Code plugin for educational videos with talking-head footage:
 one person on camera, explaining. You draft the lecture and film it. Claude
@@ -69,14 +69,14 @@ script, Claude also checks that every planned line made it into the cut.
 In Claude Code, type these two commands:
 
 ```
-/plugin marketplace add ai-augmented-scholar/teaching-video
-/plugin install teaching-video@teaching-video
+/plugin marketplace add ai-augmented-scholar/video-teach-plugin
+/plugin install video-teach-plugin@video-teach-plugin
 ```
 
 Then run setup once on each computer:
 
 ```
-/teaching-video:setup
+/video-teach-plugin:setup
 ```
 
 Setup checks your Mac first and stops with a plain message if the plugin
@@ -93,6 +93,20 @@ check, with a pass or fail for each step.
 The first transcription downloads the speech model (about 2.5 GB), so the
 first test takes a few minutes. Running setup again is safe: it checks what is
 already in place and skips it.
+
+### Upgrading from teaching-video
+
+Until version 2.0.0 this plugin was called `teaching-video`. If you installed
+it under that name, remove the old marketplace, then install again with the
+two commands above:
+
+```
+/plugin marketplace remove teaching-video
+```
+
+Then run `/video-teach-plugin:setup` once. The new name gets a new tools
+folder, so setup installs the tools again and asks its questions again. Your
+videos stay where they are; give setup the same videos folder as before.
 
 ## Three questions on first use
 
@@ -112,11 +126,11 @@ Each later video starts with one line: same filming setup as last time?
 
 ## Prompts to remember
 
-- `/teaching-video:make-video` runs the whole workflow in order. It stops
+- `/video-teach-plugin:make-video` runs the whole workflow in order. It stops
   and sends a Mac notification whenever a step is yours, and it picks up
   where you left off after a break.
-- `/teaching-video:setup` runs once per computer.
-- `/teaching-video:beatsheet` drafts a beat sheet for a lecture on any topic.
+- `/video-teach-plugin:setup` runs once per computer.
+- `/video-teach-plugin:beatsheet` drafts a beat sheet for a lecture on any topic.
 
 Plain sentences work too:
 

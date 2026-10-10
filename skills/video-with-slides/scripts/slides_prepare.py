@@ -240,7 +240,7 @@ def main():
 
     ffmpeg = which("ffmpeg")
     if not ffmpeg:
-        sys.exit("ERROR: ffmpeg is not installed. Run /teaching-video:setup.")
+        sys.exit("ERROR: ffmpeg is not installed. Run /video-teach-plugin:setup.")
 
     out = Path(a.out).expanduser().resolve()
     img_dir = out / "slides"
@@ -280,7 +280,7 @@ def main():
             sys.exit("ERROR: nothing on this Mac can read a PDF yet.\n"
                      "  Add pypdfium2 (about 6 MB) to the plugin's environment:\n"
                      "    \"%s\" install pypdfium2\n"
-                     "  or run /teaching-video:setup." % venv_pip)
+                     "  or run /video-teach-plugin:setup." % venv_pip)
 
     if not pages:
         sys.exit("ERROR: the PDF has no pages.")

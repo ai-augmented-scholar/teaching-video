@@ -181,7 +181,7 @@ TV_DATA="${CLAUDE_PLUGIN_DATA}" node "${CLAUDE_PLUGIN_ROOT}/skills/text-treatmen
 - The script copies the renderer into `${CLAUDE_PLUGIN_DATA}/renderer` and
   installs its packages there. The install is large, about 500 MB, and happens
   once; it runs again only when the plugin's renderer packages change. If Node
-  is missing, tell the user to run `/teaching-video:setup`.
+  is missing, tell the user to run `/video-teach-plugin:setup`.
 - It reads the look from the config, and the frame rate from `--footage`, so
   the fades do not judder on the timeline.
 - `--check` verifies the cut contract (below) on lossless frames and reports

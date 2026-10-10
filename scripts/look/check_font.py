@@ -86,7 +86,7 @@ def main():
 
     browser = find_browser()
     if not browser:
-        sys.exit("ERROR: no headless Chrome found. Run /teaching-video:setup first.")
+        sys.exit("ERROR: no headless Chrome found. Run /video-teach-plugin:setup first.")
 
     with tempfile.TemporaryDirectory() as tmp:
         html = Path(tmp) / "font-check.html"

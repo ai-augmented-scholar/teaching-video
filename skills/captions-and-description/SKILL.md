@@ -1,6 +1,6 @@
 ---
 name: captions-and-description
-description: Make the captions, a readable transcript and a course-page description for a finished educational video with talking-head footage. Works from the final video the user exported from iMovie or any editor, never from the raw recording. Transcribes locally with Parakeet, recovers speech that a single pass drops, and writes captions.srt, transcript.txt and course-page-description.txt into the video's folder. Use when the user has a final edit and asks for captions, subtitles, a transcript, or a description for the course site, or runs /teaching-video:captions-and-description.
+description: Make the captions, a readable transcript and a course-page description for a finished educational video with talking-head footage. Works from the final video the user exported from iMovie or any editor, never from the raw recording. Transcribes locally with Parakeet, recovers speech that a single pass drops, and writes captions.srt, transcript.txt and course-page-description.txt into the video's folder. Use when the user has a final edit and asks for captions, subtitles, a transcript, or a description for the course site, or runs /video-teach-plugin:captions-and-description.
 ---
 
 # Captions and description
@@ -19,7 +19,7 @@ It does not upload anything. The user posts the video and these files on the cou
 
 ## Settings
 
-Read `${CLAUDE_PLUGIN_DATA}/config.json` if it exists, and use `videos_root` to find the video's folder (numbered folders, `NN-slug`). Without the file, use `~/Movies/teaching-videos` and tell the user once that `/teaching-video:setup` saves their settings.
+Read `${CLAUDE_PLUGIN_DATA}/config.json` if it exists, and use `videos_root` to find the video's folder (numbered folders, `NN-slug`). Without the file, use `~/Movies/teaching-videos` and tell the user once that `/video-teach-plugin:setup` saves their settings.
 
 Every command below passes the plugin's data folder as `TV_DATA`, so the scripts find the tools that setup installed.
 

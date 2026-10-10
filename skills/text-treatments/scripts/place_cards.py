@@ -38,7 +38,7 @@ Length rules. A teaching video is read, not glanced at:
   - A card never runs into the next card or past the end of the video. When
     that cuts it short, the table says SHORT.
 
-Shared with the teaching-video plugin's text-treatments skill
+Shared with the video-teach-plugin's text-treatments skill
 (skills/text-treatments/scripts/place_cards.py). Keep the copies identical.
 
 Stdlib only; runs on /usr/bin/python3 (3.9).

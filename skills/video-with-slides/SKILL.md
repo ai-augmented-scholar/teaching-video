@@ -40,7 +40,7 @@ video unchanged.
 
 Read `${CLAUDE_PLUGIN_DATA}/config.json` if it exists. Use `videos_root` to
 find the video's folder (numbered folders, `NN-slug`). Without the file, use
-`~/Movies/teaching-videos` and tell the user once that `/teaching-video:setup`
+`~/Movies/teaching-videos` and tell the user once that `/video-teach-plugin:setup`
 saves their settings.
 
 Every command below passes the plugin's data folder as `TV_DATA`, so the
@@ -79,7 +79,7 @@ TV_DATA="${CLAUDE_PLUGIN_DATA}" python3 "$SK/slides_prepare.py" "<deck.pdf>" --n
 It reads PDFs with pypdfium2 from the plugin's environment, or with poppler
 (`pdftoppm`) when that is installed. If it reports that nothing can read a
 PDF, offer to add pypdfium2 (about 6 MB) with the command it prints, consent
-first, or run `/teaching-video:setup`.
+first, or run `/video-teach-plugin:setup`.
 
 It reports any slide without text. A picture-only slide gives the matcher
 nothing to go on, so it is placed by hand in Step 4.

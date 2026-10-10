@@ -50,7 +50,7 @@ def need_tool(name):
     if not path:
         sys.exit(
             "%s not found on PATH.\n"
-            "Run /teaching-video:setup, or install it with: brew install ffmpeg" % name
+            "Run /video-teach-plugin:setup, or install it with: brew install ffmpeg" % name
         )
     return path
 
@@ -348,7 +348,7 @@ def build_checks(m, target_lufs, ceiling_dbtp):
         "status": band(lufs, target_lufs - 1.5, target_lufs + 1.5,
                        target_lufs - 3.0, target_lufs + 3.0),
         "fix": "Normalize to %.1f LUFS at the END of the chain, then limit. "
-               "Run /teaching-video:audio-enhance; it does this." % target_lufs,
+               "Run /video-teach-plugin:audio-enhance; it does this." % target_lufs,
     })
 
     # 2. True peak / clipping
@@ -367,7 +367,7 @@ def build_checks(m, target_lufs, ceiling_dbtp):
         "value": "%.1f dBTP" % tp if tp is not None else "not measured",
         "target": "at or below %.1f dBTP" % ceiling_dbtp,
         "status": tp_status,
-        "fix": "Run /teaching-video:audio-enhance; its last stage is a "
+        "fix": "Run /video-teach-plugin:audio-enhance; its last stage is a "
                "true-peak limiter (alimiter=limit=%.3f, that is %.1f dBTP)."
                % (10 ** (ceiling_dbtp / 20.0), ceiling_dbtp),
     })
@@ -390,7 +390,7 @@ def build_checks(m, target_lufs, ceiling_dbtp):
         "value": floor_text,
         "target": "at or below -60 dBFS",
         "status": floor_status,
-        "fix": "Run /teaching-video:audio-enhance (DeepFilterNet noise removal), "
+        "fix": "Run /video-teach-plugin:audio-enhance (DeepFilterNet noise removal), "
                "or fix the room: fan, AC, computer, hard reflective surfaces.",
     })
 
@@ -409,7 +409,7 @@ def build_checks(m, target_lufs, ceiling_dbtp):
         "value": "%d gap(s) of 2 s or more" % len(long_gaps),
         "target": "none over 2 s",
         "status": gap_status,
-        "fix": "Cut the dead air. /teaching-video:perfect-cuts removes it from a "
+        "fix": "Cut the dead air. /video-teach-plugin:perfect-cuts removes it from a "
                "talking-head take.",
     })
 

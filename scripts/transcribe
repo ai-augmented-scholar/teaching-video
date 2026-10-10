@@ -53,7 +53,7 @@ def find_cli():
         return found
     sys.exit(
         "ERROR: parakeet-mlx is not installed.\n"
-        "  Run /teaching-video:setup in Claude Code to install it."
+        "  Run /video-teach-plugin:setup in Claude Code to install it."
     )
 
 

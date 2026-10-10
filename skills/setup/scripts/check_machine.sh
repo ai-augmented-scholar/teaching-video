@@ -1,5 +1,5 @@
 #!/bin/sh
-# Check that this Mac can run the teaching-video plugin, and which tools are
+# Check that this Mac can run the video-teach-plugin, and which tools are
 # still missing. POSIX sh on purpose: this runs before Homebrew, and on a fresh
 # Mac /usr/bin/python3 is only a stub that asks to install developer tools.
 #

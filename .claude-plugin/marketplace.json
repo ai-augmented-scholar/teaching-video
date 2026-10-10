@@ -1,13 +1,13 @@
 {
-  "name": "teaching-video",
-  "description": "The Teaching Video plugin from The AI-Augmented Scholar",
+  "name": "video-teach-plugin",
+  "description": "The Video Teach Plugin from The AI-Augmented Scholar",
   "owner": {
     "name": "The AI-Augmented Scholar",
     "url": "https://aiaugmentedscholar.co"
   },
   "plugins": [
     {
-      "name": "teaching-video",
+      "name": "video-teach-plugin",
       "source": "./",
       "description": "For educational videos with talking-head footage: from a beat sheet and one recording to a finished teaching video."
     }

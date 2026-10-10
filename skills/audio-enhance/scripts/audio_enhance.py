@@ -106,7 +106,7 @@ def find_tool(name, extra_dirs=("/opt/homebrew/bin", "/usr/local/bin")):
 # DeepFilterNet needs Python 3.11 (deepfilterlib has no 3.12+ wheels), so the
 # plugin's setup skill installs it into the private environment at
 # $TV_DATA/venv. DEEPFILTER_BIN (full path to a deepFilter) overrides the lookup.
-DEEPFILTER_HINT = ("run the plugin's setup skill (/teaching-video:setup), which installs "
+DEEPFILTER_HINT = ("run the plugin's setup skill (/video-teach-plugin:setup), which installs "
                    "DeepFilterNet into the plugin's own environment "
                    "(or set DEEPFILTER_BIN to an existing deepFilter)")
 

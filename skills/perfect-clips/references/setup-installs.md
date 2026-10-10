@@ -3,14 +3,14 @@
 The plugin's `setup` skill installs the tools once per computer, into the
 plugin's private environment (`${CLAUDE_PLUGIN_DATA}/venv`). When doctor.py
 reports something MISSING, the first answer is always: run
-`/teaching-video:setup`. The recipes below are for the case where the user
+`/video-teach-plugin:setup`. The recipes below are for the case where the user
 wants only the one missing piece. Every install is offered, never forced:
 name the size, get a yes, then install.
 
 - **ffmpeg + ffprobe** missing → `brew install ffmpeg` (Homebrew first if it
   is absent). Verify both binaries answer afterwards.
 - **Transcription** missing → `PARAKEET=MISSING` means the private
-  environment lacks parakeet-mlx: run `/teaching-video:setup` (it installs
+  environment lacks parakeet-mlx: run `/video-teach-plugin:setup` (it installs
   it into `${CLAUDE_PLUGIN_DATA}/venv`; the weights, about 2.5GB, download
   on first use, not at install). `TRANSCRIBE=MISSING` means the plugin
   folder is damaged: reinstall the plugin. Apple Silicon only — MLX runs on

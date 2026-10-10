@@ -1,6 +1,6 @@
 ---
 name: setup
-description: "Set up the Teaching Video plugin on this Mac, once per computer: check the Mac (Apple Silicon, macOS 14+, disk space), install the tools into a private folder (Parakeet speech-to-text, DeepFilterNet noise removal, the text-card renderer), ask where videos live and which editor the user has, ask the three first-run questions about the look of the text cards (free area of the frame, contrast, font), and finish with a 10-second test clip that reports pass or fail per step. For educational videos with talking-head footage, on a Mac with Apple Silicon, in Claude Code only. Use when the user runs /teaching-video:setup, says 'set up the teaching video plugin', 'install the video tools', or when a session-start message says tools are missing. Safe to run again: it checks and skips what is already done."
+description: "Set up the Video Teach Plugin on this Mac, once per computer: check the Mac (Apple Silicon, macOS 14+, disk space), install the tools into a private folder (Parakeet speech-to-text, DeepFilterNet noise removal, the text-card renderer), ask where videos live and which editor the user has, ask the three first-run questions about the look of the text cards (free area of the frame, contrast, font), and finish with a 10-second test clip that reports pass or fail per step. For educational videos with talking-head footage, on a Mac with Apple Silicon, in Claude Code only. Use when the user runs /video-teach-plugin:setup, says 'set up the teaching video plugin', 'install the video tools', or when a session-start message says tools are missing. Safe to run again: it checks and skips what is already done."
 ---
 
 # Setup
@@ -181,7 +181,7 @@ speech model (about 2.5 GB), so say it will take a few minutes. Show the
 pass/fail table.
 
 - **All passed:** say setup is complete, and name the one prompt to remember:
-  `/teaching-video:make-video` runs the whole workflow, from beat sheet to
+  `/video-teach-plugin:make-video` runs the whole workflow, from beat sheet to
   finished video, and stops whenever a step is the user's.
 - **A step failed:** show its line, read the error, and fix the cause (most
   often a missing tool from step 3; run `install_env.sh --check`). Then run the

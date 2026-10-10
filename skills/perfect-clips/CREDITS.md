@@ -4,7 +4,7 @@ Built by **Systems by Vic** (Vic Laranja), MIT License — see LICENSE.
 - systemsbyvic.com
 - youtube.com/@systemsbyvic
 
-This copy is adapted for lecture videos inside the teaching-video plugin:
+This copy is adapted for lecture videos inside the video-teach-plugin:
 Parakeet transcription, upright and wide clips for course pages, music off
 by default.
 
